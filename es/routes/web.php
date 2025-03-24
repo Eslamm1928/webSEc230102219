@@ -1,46 +1,47 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Web\ProductController;
-use App\Http\Controllers\Web\AuthController;
+use App\Http\Controllers\Web\ProductsController;
+use App\Http\Controllers\Web\UsersController;
 
 Route::get('/', function () {
     return view('welcome');
 });
-
 Route::get('/multable', function () {
-    $j = 6;
-    return view('multable', compact("j"));
+    return view('multable'); //multable.blade.php
 });
-
 Route::get('/even', function () {
-    return view('even');
+    return view('even'); //even.blade.php
 });
-
 Route::get('/prime', function () {
-    return view('prime');
+    return view('prime'); //prime.blade.php
 });
 
-// عرض المنتجات متاح للجميع
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('products', [ProductsController::class, 'list'])->name('products_list');
+Route::get('/products/edit/{product?}', [ProductsController::class, 'edit'])->name('products_edit');
+Route::post('products/save/{product?}', [ProductsController::class,
+'save'])->name('products_save');
+Route::get('products/delete/{product}', [ProductsController::class,
+'delete'])->name('products_delete');
 
-// تأمين العمليات الخاصة بالأدمن فقط
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
-    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
-    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
-});
 
-// راوتات تسجيل الدخول والتسجيل
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// لوحة التحكم (للمستخدمين المسجلين فقط)
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware('auth')->name('dashboard');
+Route::get('/register', [UsersController::class, 'showRegister'])->name('register');
+Route::post('/register', [UsersController::class, 'register'])->name('register.post');
+
+Route::get('/login', [UsersController::class, 'showLogin'])->name('login');
+Route::post('/login', [UsersController::class, 'login'])->name('login.post');
+Route::get('users', [UsersController::class, 'list'])->name('users');
+Route::post('/logout', [UsersController::class, 'logout'])->name('logout');
+Route::get('profile/{user?}', [UsersController::class, 'profile'])->name('users.profile');
+Route::get('users/edit/{user?}', [UsersController::class, 'edit'])->name('users_edit');
+Route::post('users/save/{user}', [UsersController::class, 'save'])->name('users_save');
+Route::get('users/delete/{user}', [UsersController::class, 'delete'])->name('users_delete');
+Route::get('users/edit_password/{user?}', [UsersController::class, 'editPassword'])->name('edit_password');
+Route::post('users/save_password/{user}', [UsersController::class, 'savePassword'])->name('save_password');
+
+Route::get('/users/create-customer', [UsersController::class, 'showCreateCustomer'])->name('users.create_customer');
+Route::post('/users/create-customer', [UsersController::class, 'createCustomerByAdmin']);
+
+
+Route::post('/products/{product}/buy', [ProductsController::class, 'buy'])->name('products.buy');

@@ -1,11 +1,9 @@
 @extends('layouts.master')
-@section('title', 'welcom')
+@section('title',"Even Number")
 @section('content')
-  <div class="card m-4">
-    <div class="card-header">Prime Numbers</div>
-      <div class="card-body">
-        <h1>hallo fa5da</h1>
-      </div>
- </div>
- 
+    <div class="card m-4">
+        <div class="card-body">
+            Welcome to Home Page
+        </div>
+    </div>
 @endsection

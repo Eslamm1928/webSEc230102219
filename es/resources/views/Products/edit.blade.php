@@ -1,36 +1,41 @@
 @extends('layouts.master')
-@section('title', 'Edit Product')
+@section('title', 'Prime Numbers')
 @section('content')
-<div class="container mt-4">
-    <h2>Edit Product</h2>
-    <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="mt-3">
-        @csrf
-        @method('PUT')
-        <div class="mb-3">
-            <label class="form-label">Code</label>
-            <input type="text" name="code" value="{{ $product->code }}" class="form-control" required>
+<form action="{{route('products_save', $product->id)}}" method="post">
+    {{ csrf_field() }}
+    <div class="row mb-2">
+        <div class="col-6">
+            <label for="code" class="form-label">Code:</label>
+            <input type="text" class="form-control" placeholder="Code" name="code" required value="{{$product->code}}">
         </div>
-        <div class="mb-3">
-            <label class="form-label">Name</label>
-            <input type="text" name="name" value="{{ $product->name }}" class="form-control" required>
+        <div class="col-6">
+            <label for="model" class="form-label">Model:</label>
+            <input type="text" class="form-control" placeholder="Model" name="model" required value="{{$product->model}}">
         </div>
-        <div class="mb-3">
-            <label class="form-label">Price</label>
-            <input type="number" name="price" value="{{ $product->price }}" class="form-control" required>
+    </div>
+    <div class="row mb-2">
+        <div class="col">
+            <label for="name" class="form-label">Name:</label>
+            <input type="text" class="form-control" placeholder="Name" name="name" required value="{{$product->name}}">
         </div>
-        <div class="mb-3">
-            <label class="form-label">Model</label>
-            <input type="text" name="model" value="{{ $product->model }}" class="form-control" required>
+    </div>
+    <div class="row mb-2">
+        <div class="col-6">
+            <label for="model" class="form-label">Price:</label>
+            <input type="numeric" class="form-control" placeholder="Price" name="price" required value="{{$product->price}}">
         </div>
-        <div class="mb-3">
-            <label class="form-label">Description</label>
-            <textarea name="description" class="form-control">{{ $product->description }}</textarea>
+        <div class="col-6">
+            <label for="model" class="form-label">Photo:</label>
+            <input type="text" class="form-control" placeholder="Photo" name="photo" required value="{{$product->photo}}">
         </div>
-        <div class="mb-3">
-            <label class="form-label">Photo</label>
-            <input type="file" name="photo" class="form-control">
+    </div>
+    <div class="row mb-2">
+        <div class="col">
+            <label for="name" class="form-label">Description:</label>
+            <textarea type="text" class="form-control" placeholder="Description" name="description" required>{{$product->description}}</textarea>
         </div>
-        <button type="submit" class="btn btn-success">Update</button>
-    </form>
-</div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+</form>
 @endsection

@@ -1,19 +1,16 @@
 @extends('layouts.master')
-@section('title', 'maltable')
+@section('title',"Multi table")
 @section('content')
-
-
-<div class="card m-4 col-sm-2">
- <div class="card-header">{{$j}} Multiplication Table</div>
- <div class="card-body">
-   <table>
-     @foreach (range(1, 10) as $i)
-     <tr><td>{{$i}} * {{$j}}</td><td> = {{ $i * $j }}</td></li>    
-     @endforeach
-   </table>
- </div>
-</div>
- 
-
-
+    <div class="card m-4">
+        <div class="card-header">Prime Numbers</div>
+        <div class="card-body">
+            @foreach (range(1, 100) as $i)
+                @if(isPrime($i))
+                    <span class="badge bg-primary">{{$i}}</span>
+                @else
+                    <span class="badge bg-secondary">{{$i}}</span>
+                @endif
+            @endforeach
+        </div>
+    </div>
 @endsection
