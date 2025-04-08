@@ -26,16 +26,22 @@
                         @endforeach
                     </td>
                 </tr>
+                @if(auth()->user()->hasRole('client'))
                 <tr>
                     <th>Balance</th>
-                    <td>${{ number_format($user->balance, 2) }}</td>
+                    <td>{{ number_format($user->balance, 2) }}</td>
                 </tr>
-            </table>
+                @endif
+                @if(auth()->user()->hasRole('client')) 
+                    </table>
+                    <a href="{{ route('users.purchases', $user->id) }}" class="btn btn-outline-dark mt-3">View Bought Products</a>
 
+
+            @endif
             <div class="row">
                 <div class="col col-6">
                 </div>
-                @if(auth()->user()->hasPermissionTo('admin_users')||auth()->id()==$user->id)
+                @if(auth()->user()->hasPermissionTo('admin_users') || auth()->id() == $user->id)
                 <div class="col col-4">
                     <a class="btn btn-primary" href='{{route('edit_password', $user->id)}}'>Change Password</a>
                 </div>
@@ -43,7 +49,7 @@
                 <div class="col col-4">
                 </div>
                 @endif
-                @if(auth()->user()->hasPermissionTo('edit_users')||auth()->id()==$user->id)
+                @if(auth()->user()->hasPermissionTo('edit_users') || auth()->id() == $user->id)
                 <div class="col col-2">
                     <a href="{{route('users_edit', $user->id)}}" class="btn btn-success form-control">Edit</a>
                 </div>
