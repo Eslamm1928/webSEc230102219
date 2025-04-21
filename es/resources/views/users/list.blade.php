@@ -29,6 +29,7 @@
             <th scope="col">Name</th>
             <th scope="col">Email</th>
             <th scope="col">Roles</th>
+
             <th scope="col"></th>
             </tr>
         </thead>
@@ -37,11 +38,12 @@
             <td scope="col">{{$user->id}}</td>
             <td scope="col">{{$user->name}}</td>
             <td scope="col">{{$user->email}}</td>
+            
             <td scope="col">
             @foreach($user->roles as $role)
                 <span class="badge bg-primary">{{$role->name}}</span>
             @endforeach
-            </td>
+
             <td scope="col">
             @can('edit_users')
             <a class="btn btn-primary" href='{{route('users_edit', [$user->id])}}'>Edit</a>
@@ -52,8 +54,12 @@
             @can('delete_users')
             <a class="btn btn-danger" href='{{route('users_delete', [$user->id])}}'>Delete</a>
             @endcan
-            @can('update_balance')
-            <a class="btn btn-danger" href='{{route('showBalance', [$user->id])}}'>Update Balance</a>
+
+            @can('resetBalance')
+            <form action="{{ route('users.resetBalance', [$user->id]) }}" method="POST" style="display:inline-block;">
+            @csrf
+            <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure you want to reset this balance?')">Reset Balance</button>
+            </form>
             @endcan
             </td>
         </tr>

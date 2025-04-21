@@ -1,17 +1,22 @@
 <?php
 namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
+use App\Mail\VerificationEmail;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
+use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use App\Models\Order;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use DB;
 use Artisan;
+use Carbon\Carbon;
 
 
 class UsersController extends Controller{
@@ -39,7 +44,8 @@ public function showRegister(Request $request){
     return view('users.register');
 }
 
-    public function register(Request $request)
+
+public function register(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -52,10 +58,26 @@ public function showRegister(Request $request){
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
-        $user->assignRole('client');
-        return redirect('/');
-    }
 
+        $user->assignRole('client');
+
+        $title = "Verification Link";
+        $token = Crypt::encryptString(json_encode(['id' => $user->id, 'email' => $user->email]));
+        $link = route("verify", ['token' => $token]);
+        Mail::to($user->email)->send(new VerificationEmail($link, $user->name));
+        return redirect('/');
+
+    }
+    public function verify(Request $request) {
+
+        $decryptedData = json_decode(Crypt::decryptString($request->token), true);
+        $user = User::find($decryptedData['id']);
+        if(!$user) abort(401);
+        $user->email_verified_at = Carbon::now();
+        $user->save();
+
+        return view('users.verified', compact('user'));
+}
   
     public function showLogin()
     {
@@ -73,6 +95,7 @@ public function showRegister(Request $request){
         if (Auth::attempt($credentials)) {
             return redirect('/');
         }
+        
 
         return back()->withErrors(['email' => 'Invalid credentials']);
     }
@@ -150,8 +173,6 @@ public function showRegister(Request $request){
     public function delete(Request $request, User $user) {
 
         if(!auth()->user()->hasPermissionTo('delete_users')) abort(401);
-
-        //$user->delete();
 
         return redirect()->route('users');
 }
@@ -250,8 +271,20 @@ public function showCreateEmployee()
 
         $user->assignRole('Employee');
         return redirect('/');
+
+
 }
 
+public function resetBalance($id)
+{
+    if (!auth()->user()->hasPermissionTo('resetBalance')) {
+        abort(403, 'Unauthorized action.');
+    }
+    $user = User::findOrFail($id);
+    $user->balance = 0;
+    $user->save();
 
+    return redirect()->back()->with('success', 'Balance reset to $0.00');
+}
 
 }

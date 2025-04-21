@@ -100,4 +100,9 @@ public function delete(Request $request, Product $product) {
     }
 
 
+
+
+
+
 }
+

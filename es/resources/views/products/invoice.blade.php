@@ -28,5 +28,7 @@
             </tfoot>
         </table>
         <a href="{{ route('products_list') }}" class="btn btn-primary">Back to Products</a>
+        
     </div>
+    
 @endsection

@@ -51,4 +51,8 @@ Route::post('/products/{product}/buy', [ProductsController::class, 'buy'])->name
 Route::get('/invoice/{order}', [ProductsController::class, 'invoice'])->name('invoice');
 Route::get('/insufficient-balance', [ProductsController::class, 'insufficientBalance'])->name('insufficient');
 Route::get('/users/{id}/purchases', [UsersController::class, 'purchases'])->name('users.purchases');
+Route::post('/users/{id}/reset-balance', [UsersController::class, 'resetBalance'])->name('users.resetBalance')->middleware('can:update_balance');
+
+
+Route::get('verify', [UsersController::class, 'verify'])->name('verify');
 
